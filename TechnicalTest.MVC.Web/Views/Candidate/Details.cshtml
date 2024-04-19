@@ -1,0 +1,101 @@
+﻿@model TechnicalTest.Domain.DTOs.CandidateDto
+
+<h2>Candidate Details</h2>
+
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Name)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Name)
+    </dd>
+
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Surname)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Surname)
+    </dd>
+
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Birthdate)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Birthdate)
+    </dd>
+
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Email)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Email)
+    </dd>
+
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.InsertDate)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.InsertDate)
+    </dd>
+
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.ModifyDate)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.ModifyDate)
+    </dd>
+</dl>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.IdCandidate" class="btn btn-primary">Edit</a> |
+    <a asp-action="Delete" asp-route-id="@Model.IdCandidate" class="btn btn-danger">Delete</a> |
+    <a asp-action="Index" class="btn btn-secondary">Return to List</a>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-auto">
+        <h3>Candidate Experiences</h3>
+        <a asp-action="CreateExperience" asp-route-id="@Model.IdCandidate" class="btn btn-success btn-sm mb-3">
+            Add Experience
+        </a>
+    </div>
+</div>
+
+@if (Model.Experiences != null && Model.Experiences.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Job</th>
+                <th>Description</th>
+                <th>Begin Date</th>
+                <th>End Date</th>
+                <th>Salary</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var experience in Model.Experiences)
+            {
+                <tr>
+                    <td>@experience.Company</td>
+                    <td>@experience.Job</td>
+                    <td>@experience.Description</td>
+                    <td>@experience.BeginDate.ToShortDateString()</td>
+                    <td>@(experience.EndDate.HasValue ? experience.EndDate.Value.ToShortDateString() : "")</td>
+                    <td>@experience.Salary</td>
+                    <td>
+                        <a asp-action="EditExperience" asp-route-id="@experience.IdCandidateExperience" class="btn btn-primary">Edit</a> |
+                        <a asp-action="DeleteExperience" asp-route-id="@experience.IdCandidateExperience" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No experiences found for this candidate.</p>
+}
