@@ -1,30 +1,36 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TechnicalTest.Business.Services;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using TechnicalTest.Infraestructure.Services.Candidates.Commands;
+using TechnicalTest.Infraestructure.Services.Candidates.Queries;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TechnicalTest.MVC.Web.Controllers;
 
 public class CandidateController : Controller
 {
-    CandidateServices _candidateServices;
+    IMediator _mediator;
 
-    public CandidateController(CandidateServices candidateServices)
+    public CandidateController(IMediator mediator)
     {
-        _candidateServices = candidateServices;
+        _mediator = mediator;
     }
 
     // GET: CandidateController
     public async Task<IActionResult> Index()
     {
-        var candidates = await _candidateServices.GetAllAsync();
+        var candidates = await _mediator.Send(new GetAllCandidateQuery());
+
         return View(candidates);
     }
 
     // GET: CandidateController/Details/5
     public async Task<IActionResult> Details(int id)
     {
-        var candidate = await _candidateServices.GetByIdAsync(id);
+        var query = new GetByIdCandidateQuery(id);
+        var candidate = await _mediator.Send(query);
+
+        if (candidate is null)
+            return NotFound();
 
         return View(candidate);
     }
@@ -44,7 +50,7 @@ public class CandidateController : Controller
         {
             if (ModelState.IsValid)
             {
-                var candidate = await _candidateServices.CreateAsync(command);
+                var candidate = await _mediator.Send(command);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -70,7 +76,10 @@ public class CandidateController : Controller
     {
         if (ModelState.IsValid)
         {
-            await _candidateServices.CreateExperienceAsync(experience);
+            var candidateExperience = await _mediator.Send(experience);
+            if (candidateExperience is null)
+                return NotFound();
+
             return RedirectToAction("Details", new { id = experience.IdCandidate });
         }
         return View(experience);
@@ -79,12 +88,11 @@ public class CandidateController : Controller
     // GET: CandidateController/Edit/5
     public async Task<IActionResult> Edit(int id)
     {
-        var candidate = await _candidateServices.GetByIdAsync(id);
+        var query = new GetByIdCandidateQuery(id);
+        var candidate = await _mediator.Send(query);
 
         if (candidate is null)
-        {
             return NotFound();
-        }
 
         var command = new UpdateCandidateCommand(candidate.Name, candidate.Surname, candidate.Birthdate, candidate.Email, candidate.IdCandidate);
 
@@ -100,7 +108,10 @@ public class CandidateController : Controller
         {
             if (ModelState.IsValid)
             {
-                await _candidateServices.UpdateAsync(command.id, command);
+                var candidate = await _mediator.Send(command);
+
+                if (candidate is null)
+                    return NotFound();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -116,12 +127,11 @@ public class CandidateController : Controller
     // GET: CandidateController/EditExperience/5
     public async Task<IActionResult> EditExperience(int id)
     {
-        var experience = await _candidateServices.GetByIdExperienceAsync(id);
+        var query = new GetByIdCandidateExperienceQuery(id);
+        var experience = await _mediator.Send(query);
 
         if (experience is null)
-        {
             return NotFound();
-        }
 
         var command = new UpdateCandidateExperienceCommand(experience.IdCandidate, experience.Company, experience.Job, experience.Description, experience.Salary, experience.BeginDate, experience.EndDate, experience.IdCandidateExperience);
 
@@ -135,7 +145,11 @@ public class CandidateController : Controller
     {
         if (ModelState.IsValid)
         {
-            await _candidateServices.UpdateExperienceAsync(experience.id, experience);
+            var candidate = await _mediator.Send(experience);
+
+            if (candidate is null)
+                return NotFound();
+
             return RedirectToAction("Details", new { id = experience.IdCandidate });
         }
 
@@ -146,12 +160,11 @@ public class CandidateController : Controller
     // GET: CandidateController/Delete/5
     public async Task<IActionResult> Delete(int id)
     {
-        var candidate = await _candidateServices.GetByIdAsync(id);
+        var query = new GetByIdCandidateQuery(id);
+        var candidate = await _mediator.Send(query);
 
         if (candidate is null)
-        {
             return NotFound();
-        }
 
         return View(candidate);
     }
@@ -163,7 +176,7 @@ public class CandidateController : Controller
     {
         try
         {
-            var isDeleted = await _candidateServices.DeleteAsync(IdCandidate);
+            var isDeleted = await _mediator.Send(new DeleteCandidateCommand(IdCandidate));
 
             if (isDeleted)
             {
@@ -183,12 +196,11 @@ public class CandidateController : Controller
     // GET: Candidate/DeleteExperience/5
     public async Task<IActionResult> DeleteExperience(int id)
     {
-        var experience = await _candidateServices.GetByIdExperienceAsync(id);
+        var query = new GetByIdCandidateExperienceQuery(id);
+        var experience = await _mediator.Send(query);
 
         if (experience is null)
-        {
             return NotFound();
-        }
 
         return View(experience);
     }
@@ -200,7 +212,7 @@ public class CandidateController : Controller
     {
         try
         {
-            var isDeleted = await _candidateServices.DeleteExperienceAsync(IdCandidateExperience);
+            var isDeleted = await _mediator.Send(new DeleteCandidateExperienceCommand(IdCandidateExperience));
 
             if (isDeleted)
             {

@@ -2,8 +2,9 @@
 using TechnicalTest.Infraestructure.Services.Candidates.Commands;
 using TechnicalTest.Domain.DTOs;
 using TechnicalTest.Domain.Models;
+using TechnicalTest.DataAccess.Clients.Database;
 
-namespace TechnicalTest.DataAccess.Clients.Database.Handlers;
+namespace TechnicalTest.Business.Handlers;
 
 public class CreateCandidateHandler : IRequestHandler<CreateCandidateCommand, CandidateDto>
 {

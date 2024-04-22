@@ -1,7 +1,8 @@
 ﻿using MediatR;
+using TechnicalTest.DataAccess.Clients.Database;
 using TechnicalTest.Infraestructure.Services.Candidates.Commands;
 
-namespace TechnicalTest.DataAccess.Clients.Database.Handlers;
+namespace TechnicalTest.Business.Handlers;
 
 public class DeleteCandidateHandler : IRequestHandler<DeleteCandidateCommand, bool>
 {

@@ -1,8 +1,9 @@
 ﻿using MediatR;
+using TechnicalTest.DataAccess.Clients.Database;
 using TechnicalTest.Domain.DTOs;
 using TechnicalTest.Infraestructure.Services.Candidates.Queries;
 
-namespace TechnicalTest.DataAccess.Clients.Database.Handlers;
+namespace TechnicalTest.Business.Handlers;
 
 public class GetByIdCandidateExperienceHandler : IRequestHandler<GetByIdCandidateExperienceQuery, CandidateExperienceDto>
 {

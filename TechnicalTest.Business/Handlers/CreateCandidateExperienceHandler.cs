@@ -1,9 +1,10 @@
 ﻿using MediatR;
+using TechnicalTest.DataAccess.Clients.Database;
 using TechnicalTest.Domain.DTOs;
 using TechnicalTest.Domain.Models;
 using TechnicalTest.Infraestructure.Services.Candidates.Commands;
 
-namespace TechnicalTest.DataAccess.Clients.Database.Handlers;
+namespace TechnicalTest.Business.Handlers;
 
 public class CreateCandidateExperienceHandler : IRequestHandler<CreateCandidateExperienceCommand, CandidateExperienceDto>
 {

@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using TechnicalTest.DataAccess.Clients.Database;
 using TechnicalTest.Domain.DTOs;
 using TechnicalTest.Infraestructure.Services.Candidates.Queries;
 
-namespace TechnicalTest.DataAccess.Clients.Database.Handlers;
+namespace TechnicalTest.Business.Handlers;
 
 public class GetAllCandidateHandler : IRequestHandler<GetAllCandidateQuery, IEnumerable<CandidateDto>>
 {
